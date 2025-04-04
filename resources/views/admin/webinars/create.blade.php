@@ -847,16 +847,21 @@
 
                                 <div class="row">
                                     <div class="col-12">
-                                        <button type="button" id="saveAndPublish" class="btn btn-success">{{ !empty($webinar) ? trans('admin/main.save_and_publish') : trans('admin/main.save_and_continue') }}</button>
+                                        <button type="button" id="saveAndPublish" class="btn btn-success">
+                                            {{ !empty($webinar) ? trans('admin/main.save_and_publish') : trans('admin/main.save_and_continue') }}
+                                        </button>
 
-                                        <button type="button" 
-                                        id="toggleOutdateCourse" 
-                                        class="btn {{ $webinar->outdated_course ? 'btn-danger' : 'btn-success' }}" 
-                                        data-webinar-id="{{ $webinar->id }}" 
-                                        data-outdated="{{ $webinar->outdated_course }}">
-                                    {{ $webinar->outdated_course ? 'Unoutdate' : 'Outdate' }}
-                                </button>
-                                
+                                        @if(!empty($webinar))
+                                            <button type="button" 
+                                                id="toggleOutdateCourse" 
+                                                class="btn {{ $webinar->outdated_course ? 'btn-danger' : 'btn-success' }}" 
+                                                data-webinar-id="{{ $webinar->id }}" 
+                                                data-outdated="{{ $webinar->outdated_course }}">
+                                                {{ $webinar->outdated_course ? 'Unoutdate' : 'Outdate' }}
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>                          
 
                                         @if(!empty($webinar))
                                             <button type="button" id="saveReject" class="btn btn-warning">{{ ($webinar->status == "active") ? trans('update.unpublish') : trans('public.reject') }}</button>
