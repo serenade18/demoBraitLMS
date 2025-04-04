@@ -853,7 +853,8 @@
                                         id="toggleOutdateCourse" 
                                         class="btn {{ $webinar->outdated_course ? 'btn-danger' : 'btn-success' }}" 
                                         data-webinar-id="{{ $webinar->id }}" 
-                                        >
+                                        data-outdated="{{ $webinar->outdated_course }}">
+                                    {{ $webinar->outdated_course ? 'Unoutdate' : 'Outdate' }}
                                 </button>
                                 
 

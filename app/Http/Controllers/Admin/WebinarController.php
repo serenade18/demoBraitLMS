@@ -323,7 +323,8 @@ class WebinarController extends Controller
         $data = [
             'pageTitle' => trans('admin/main.webinar_new_page_title'),
             'teachers' => $teachers,
-            'categories' => $categories
+            'categories' => $categories,
+            'webinar' => null,
         ];
 
         return view('admin.webinars.create', $data);
@@ -1308,20 +1309,20 @@ class WebinarController extends Controller
     }
 
     public function unoutdate(Request $request, $id)
-{
-    $this->authorize('admin_webinars_edit');
+    {
+        $this->authorize('admin_webinars_edit');
 
-    $webinar = Webinar::findOrFail($id);
+        $webinar = Webinar::findOrFail($id);
 
-    // Update the outdated_course field
-    $webinar->update([
-        'outdated_course' => 0,
-    ]);
+        // Update the outdated_course field
+        $webinar->update([
+            'outdated_course' => 0,
+        ]);
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Course marked as not outdated successfully.',
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'Course marked as not outdated successfully.',
+        ]);
+    }
 
 }
