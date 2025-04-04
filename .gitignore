@@ -1,0 +1,25 @@
+# Laravel directories to exclude
+/vendor
+/node_modules
+
+# Laravel environment files
+.env
+.env.*.backup
+
+# IDE and OS-specific files
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Laravel log and cache files
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+
+# Deployment files
+Homestead.yaml
+Homestead.json
+.env.testing
