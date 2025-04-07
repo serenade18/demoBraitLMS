@@ -530,17 +530,38 @@ class FileController extends Controller
         return $result;
     }
 
+    // public function fileInfo($path)
+    // {
+    //     $file = array();
+
+    //     $file_path = public_path($path);
+
+    //     $filePath = pathinfo($file_path);
+
+    //     $file['name'] = $filePath['filename'];
+    //     $file['extension'] = $filePath['extension'];
+    //     $file['size'] = filesize($file_path);
+
+    //     return $file;
+    // }
+
     public function fileInfo($path)
     {
-        $file = array();
+        $file = [];
 
-        $file_path = public_path($path);
+        // Clean up the path if it starts with full URL
+        $s3Path = str_replace(Storage::disk('s3')->url(''), '', $path);
 
-        $filePath = pathinfo($file_path);
+        // Get file name and extension
+        $fileInfo = pathinfo($s3Path);
 
-        $file['name'] = $filePath['filename'];
-        $file['extension'] = $filePath['extension'];
-        $file['size'] = filesize($file_path);
+        $file['name'] = $fileInfo['filename'] ?? '';
+        $file['extension'] = $fileInfo['extension'] ?? '';
+
+        // Get size from S3
+        $file['size'] = Storage::disk('s3')->exists($s3Path)
+            ? Storage::disk('s3')->size($s3Path)
+            : 0;
 
         return $file;
     }
