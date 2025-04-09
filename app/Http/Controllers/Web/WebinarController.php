@@ -612,7 +612,7 @@ class WebinarController extends Controller
                 
                         // Construct the full URL to the video file in S3
                         // Assuming your S3 bucket is public and you have the URL in the form of:
-                        $s3Url = 'https://easyprenuer.com.s3.amazonaws.com/' . $filePath;
+                        $s3Url = $filePath;
                 
                         // Log the URL for debugging
                         \Log::info('Direct URL for video: ' . $s3Url);
