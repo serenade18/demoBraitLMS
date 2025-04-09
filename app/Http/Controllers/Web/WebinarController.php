@@ -610,29 +610,17 @@ class WebinarController extends Controller
                         // Get the file path from the database or object
                         $filePath = $file->file;  // Example: '1/Intro Videos/Lesson 1 Intro.mp4'
                 
-                        // Ensure the file path is properly URL-encoded
-                        $encodedFilePath = urlencode($filePath);  // Encode spaces and special characters
+                        // Construct the full URL to the video file in S3
+                        // Assuming your S3 bucket is public and you have the URL in the form of:
+                        $s3Url = 'https://easyprenuer.com.s3.amazonaws.com/' . $filePath;
                 
-                        try {
-                            // Generate a temporary signed URL from S3 with a 10-minute expiry
-                            $s3Url = \Storage::disk('s3')->temporaryUrl(
-                                $encodedFilePath, // Path relative to your S3 bucket root
-                                now()->addMinutes(10) // Expiry time (adjustable as per your needs)
-                            );
+                        // Log the URL for debugging
+                        \Log::info('Direct URL for video: ' . $s3Url);
                 
-                            // Log the URL for debugging
-                            \Log::info('Generated signed URL for video: ' . $s3Url);
-                
-                            // Redirect to the generated URL (absolute URL is not needed here)
-                            return redirect()->to($s3Url);
-                
-                        } catch (\Exception $e) {
-                            // Handle the case where the URL generation fails
-                            \Log::error('Error generating signed URL: ' . $e->getMessage());
-                            return response()->json(['error' => 'Unable to generate signed URL'], 500);
-                        }
+                        // Return the URL to the video (no signed URL needed)
+                        return redirect()->to($s3Url);
                     }
-                }
+                }                
                        
                     
                 }
