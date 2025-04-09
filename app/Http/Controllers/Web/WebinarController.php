@@ -604,26 +604,30 @@ class WebinarController extends Controller
                     }
                     else if ($file->isVideo()) {
                         if ($file->storage == 'upload') {
-                            // Extract file path stored in DB (just the key, not full URL)
+                            // Extract file path stored in DB (can be a key or a full URL)
                             $s3Key = $file->file;
                     
-                            // Clean up in case it's a full URL
+                            // If it's a full URL, strip the domain part
                             if (filter_var($s3Key, FILTER_VALIDATE_URL)) {
-                                $s3Key = ltrim(parse_url($s3Key, PHP_URL_PATH), '/');
+                                $parsedPath = parse_url($s3Key, PHP_URL_PATH);
+                                $s3Key = ltrim($parsedPath, '/');
                             }
                     
-                            // Construct full URL using custom S3 domain
-                            $customS3Url = 'http://easyprenuer.com.s3.amazonaws.com/' . $s3Key;
+                            // URL-encode the path except slashes
+                            $encodedKey = implode('/', array_map('rawurlencode', explode('/', $s3Key)));
                     
-                            // Log it for debugging
+                            // Construct full URL using custom S3 domain
+                            $customS3Url = 'http://easyprenuer.com.s3.amazonaws.com/' . $encodedKey;
+                    
+                            // Log for debugging
                             \Log::info('Custom S3 URL: ' . $customS3Url);
                     
-                            // Return or redirect to the custom S3 URL
+                            // Redirect to custom URL
                             return redirect()->to($customS3Url);
                         } else {
                             return response()->file(public_path($file->file));
                         }
-                    }        
+                    }                          
                                                        
                 }
             }
