@@ -516,7 +516,7 @@ class WebinarController extends Controller
         }
 
         abort(403);
-    }
+    } 
 
     public function getFilePath(Request $request)
     {
@@ -601,9 +601,22 @@ class WebinarController extends Controller
                         ];
 
                         return view('web.default.course.learningPage.interactive_file', $data);
+                    // }
+                    //  else if ($file->isVideo()) {
+                    //     return response()->file(public_path($file->file));
+                    // }
                     } else if ($file->isVideo()) {
-                        return response()->file(public_path($file->file));
+                        if ($file->storage == 'upload') {
+                            // Generate a temporary signed URL from S3
+                            $s3Url = \Storage::disk('s3')->temporaryUrl(
+                                $file->file, // path relative to your S3 bucket root
+                                now()->addMinutes(10) // expiry time
+                            );
+                    
+                            return redirect()->to($s3Url);
+                        }
                     }
+                    
                 }
             }
         }
