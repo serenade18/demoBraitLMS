@@ -604,20 +604,26 @@ class WebinarController extends Controller
                     }
                     else if ($file->isVideo()) {
                         if ($file->storage == 'upload') {
-                            // Get the file path from the database or object
-                            $filePath = $file->file; 
+                            // Extract file path stored in DB (just the key, not full URL)
+                            $s3Key = $file->file;
                     
-                            $s3Url = $filePath;
+                            // Clean up in case it's a full URL
+                            if (filter_var($s3Key, FILTER_VALIDATE_URL)) {
+                                $s3Key = ltrim(parse_url($s3Key, PHP_URL_PATH), '/');
+                            }
                     
-                            // Log the URL for debugging
-                            \Log::info('Direct URL for video: ' . $s3Url);
+                            // Construct full URL using custom S3 domain
+                            $customS3Url = 'http://easyprenuer.com.s3.amazonaws.com/' . $s3Key;
                     
-                            // Return the URL to the video (no signed URL needed)
-                            return redirect()->to($s3Url);
+                            // Log it for debugging
+                            \Log::info('Custom S3 URL: ' . $customS3Url);
+                    
+                            // Return or redirect to the custom S3 URL
+                            return redirect()->to($customS3Url);
                         } else {
                             return response()->file(public_path($file->file));
                         }
-                    }
+                    }        
                                                        
                 }
             }
