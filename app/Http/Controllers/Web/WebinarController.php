@@ -605,17 +605,34 @@ class WebinarController extends Controller
                     //  else if ($file->isVideo()) {
                     //     return response()->file(public_path($file->file));
                     // }
-                    } else if ($file->isVideo()) {
-                        if ($file->storage == 'upload') {
-                            // Generate a temporary signed URL from S3
+                } else if ($file->isVideo()) {
+                    if ($file->storage == 'upload') {
+                        // Get the file path from the database or object
+                        $filePath = $file->file;  // Example: 'videos/filename.mp4'
+                
+                        // Ensure the file path is properly URL-encoded
+                        $encodedFilePath = urlencode($filePath);
+                
+                        try {
+                            // Generate a temporary signed URL from S3 with a 10-minute expiry
                             $s3Url = \Storage::disk('s3')->temporaryUrl(
-                                $file->file, // path relative to your S3 bucket root
-                                now()->addMinutes(10) // expiry time
+                                $encodedFilePath, // Path relative to your S3 bucket root
+                                now()->addMinutes(10) // Expiry time (adjustable as per your needs)
                             );
-                    
+                
+                            // Log the URL for debugging
+                            \Log::info('Generated signed URL for video: ' . $s3Url);
+                
+                            // Redirect to the generated URL
                             return redirect()->to($s3Url);
+                
+                        } catch (\Exception $e) {
+                            // Handle the case where the URL generation fails
+                            \Log::error('Error generating signed URL: ' . $e->getMessage());
+                            return response()->json(['error' => 'Unable to generate signed URL'], 500);
                         }
                     }
+                }                
                     
                 }
             }
