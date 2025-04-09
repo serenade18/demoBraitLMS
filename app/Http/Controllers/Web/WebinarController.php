@@ -601,28 +601,24 @@ class WebinarController extends Controller
                         ];
 
                         return view('web.default.course.learningPage.interactive_file', $data);
-                    // }
-                    //  else if ($file->isVideo()) {
-                    //     return response()->file(public_path($file->file));
-                    // }
-                } else if ($file->isVideo()) {
-                    if ($file->storage == 'upload') {
-                        // Get the file path from the database or object
-                        $filePath = $file->file;  // Example: '1/Intro Videos/Lesson 1 Intro.mp4'
-                
-                        // Construct the full URL to the video file in S3
-                        // Assuming your S3 bucket is public and you have the URL in the form of:
-                        $s3Url = $filePath;
-                
-                        // Log the URL for debugging
-                        \Log::info('Direct URL for video: ' . $s3Url);
-                
-                        // Return the URL to the video (no signed URL needed)
-                        return redirect()->to($s3Url);
                     }
-                }                
-                       
+                    else if ($file->isVideo()) {
+                        if ($file->storage == 'upload') {
+                            // Get the file path from the database or object
+                            $filePath = $file->file; 
                     
+                            $s3Url = $filePath;
+                    
+                            // Log the URL for debugging
+                            \Log::info('Direct URL for video: ' . $s3Url);
+                    
+                            // Return the URL to the video (no signed URL needed)
+                            return redirect()->to($s3Url);
+                        } else {
+                            return response()->file(public_path($file->file));
+                        }
+                    }
+                                                       
                 }
             }
         }
