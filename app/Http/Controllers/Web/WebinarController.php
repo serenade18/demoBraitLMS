@@ -608,10 +608,10 @@ class WebinarController extends Controller
                 } else if ($file->isVideo()) {
                     if ($file->storage == 'upload') {
                         // Get the file path from the database or object
-                        $filePath = $file->file;  // Example: 'videos/filename.mp4'
+                        $filePath = $file->file;  // Example: '1/Intro Videos/Lesson 1 Intro.mp4'
                 
                         // Ensure the file path is properly URL-encoded
-                        $encodedFilePath = urlencode($filePath);
+                        $encodedFilePath = urlencode($filePath);  // Encode spaces and special characters
                 
                         try {
                             // Generate a temporary signed URL from S3 with a 10-minute expiry
@@ -623,7 +623,7 @@ class WebinarController extends Controller
                             // Log the URL for debugging
                             \Log::info('Generated signed URL for video: ' . $s3Url);
                 
-                            // Redirect to the generated URL
+                            // Redirect to the generated URL (absolute URL is not needed here)
                             return redirect()->to($s3Url);
                 
                         } catch (\Exception $e) {
@@ -632,7 +632,8 @@ class WebinarController extends Controller
                             return response()->json(['error' => 'Unable to generate signed URL'], 500);
                         }
                     }
-                }                
+                }
+                       
                     
                 }
             }
