@@ -570,65 +570,142 @@ class WebinarController extends Controller
         abort(403);
     }
 
-    public function playFile($slug, $file_id)
-    {
-        // this methode linked from video modal for play local video
-        // and linked from file.blade for show google_drive,dropbox,iframe
+    // public function playFile($slug, $file_id)
+    // {
+    //     // this methode linked from video modal for play local video
+    //     // and linked from file.blade for show google_drive,dropbox,iframe
 
-        $webinar = Webinar::where('slug', $slug)
-            ->where('status', 'active')
+    //     $webinar = Webinar::where('slug', $slug)
+    //         ->where('status', 'active')
+    //         ->first();
+
+    //     if (!empty($webinar) and $this->checkCanAccessToPrivateCourse($webinar)) {
+    //         $file = File::where('webinar_id', $webinar->id)
+    //             ->where('id', $file_id)
+    //             ->first();
+
+    //         if (!empty($file)) {
+    //             $canAccess = true;
+
+    //             if ($file->accessibility == 'paid') {
+    //                 $canAccess = $webinar->checkUserHasBought();
+    //             }
+
+    //             if ($canAccess) {
+    //                 $notVideoSource = ['iframe', 'google_drive', 'dropbox'];
+
+    //                 if (in_array($file->storage, $notVideoSource)) {
+    //                     $data = [
+    //                         'pageTitle' => $file->title,
+    //                         'iframe' => $file->file
+    //                     ];
+
+    //                     return view('web.default.course.learningPage.interactive_file', $data);
+    //                 }
+    //                 else if ($file->isVideo()) {
+    //                     if ($file->storage == 'upload') {
+    //                         // Get the file path from the database or object
+    //                         $filePath = $file->file; 
+                    
+    //                         // Generate a signed URL for the file on S3 that expires in 10 minutes (you can adjust the expiry time)
+    //                         $s3Url = \Storage::disk('s3')->temporaryUrl(
+    //                             $filePath,   // Path to the file in the S3 bucket
+    //                             now()->addMinutes(10) // URL expiry time (you can adjust this as needed)
+    //                         );
+                    
+    //                         // Log the URL for debugging
+    //                         \Log::info('Signed URL for video: ' . $s3Url);
+                    
+    //                         // Return the signed URL to the video
+    //                         return redirect()->to($s3Url);
+    //                     } else {
+    //                         return response()->file(public_path($file->file));
+    //                     }
+    //                 }                    
+                                                       
+    //             }
+    //         }
+    //     }
+
+    //     abort(403);
+    // }
+
+    public function playFile($slug, $file_id)
+{
+    // this method is linked from video modal to play local video
+    // and linked from file.blade to show google_drive, dropbox, iframe
+
+    // Fetch the webinar based on the slug and check if it's active
+    $webinar = Webinar::where('slug', $slug)
+        ->where('status', 'active')
+        ->first();
+
+    // Check if the webinar exists and if the user has access to the course
+    if (!empty($webinar) && $this->checkCanAccessToPrivateCourse($webinar)) {
+        // Find the file based on the webinar ID and file ID
+        $file = File::where('webinar_id', $webinar->id)
+            ->where('id', $file_id)
             ->first();
 
-        if (!empty($webinar) and $this->checkCanAccessToPrivateCourse($webinar)) {
-            $file = File::where('webinar_id', $webinar->id)
-                ->where('id', $file_id)
-                ->first();
+        // Ensure the file exists
+        if (!empty($file)) {
+            $canAccess = true;
 
-            if (!empty($file)) {
-                $canAccess = true;
+            // If the file is paid, check if the user has bought access
+            if ($file->accessibility == 'paid') {
+                $canAccess = $webinar->checkUserHasBought();
+            }
 
-                if ($file->accessibility == 'paid') {
-                    $canAccess = $webinar->checkUserHasBought();
-                }
+            // If the user has access, proceed
+            if ($canAccess) {
+                // For non-video sources (e.g., iframe, Google Drive, Dropbox), handle them
+                $notVideoSource = ['iframe', 'google_drive', 'dropbox'];
 
-                if ($canAccess) {
-                    $notVideoSource = ['iframe', 'google_drive', 'dropbox'];
+                // Check if the file is from a non-video source (iframe, Google Drive, Dropbox)
+                if (in_array($file->storage, $notVideoSource)) {
+                    $data = [
+                        'pageTitle' => $file->title,
+                        'iframe' => $file->file,
+                    ];
 
-                    if (in_array($file->storage, $notVideoSource)) {
-                        $data = [
-                            'pageTitle' => $file->title,
-                            'iframe' => $file->file
-                        ];
+                    return view('web.default.course.learningPage.interactive_file', $data);
+                } 
+                // For video files stored on S3, generate a signed URL
+                else if ($file->isVideo()) {
+                    if ($file->storage == 'upload') {
+                        // Get the file path from the database (just the key, not the full URL)
+                        $filePath = $file->file;
 
-                        return view('web.default.course.learningPage.interactive_file', $data);
-                    }
-                    else if ($file->isVideo()) {
-                        if ($file->storage == 'upload') {
-                            // Get the file path from the database or object
-                            $filePath = $file->file; 
-                    
-                            // Generate a signed URL for the file on S3 that expires in 10 minutes (you can adjust the expiry time)
+                        // Check if the user is logged in
+                        if (auth()->check()) {
+                            // Generate a signed URL for the file on S3 that expires in 2 hours (adjustable)
                             $s3Url = \Storage::disk('s3')->temporaryUrl(
                                 $filePath,   // Path to the file in the S3 bucket
-                                now()->addMinutes(10) // URL expiry time (you can adjust this as needed)
+                                now()->addMinutes(80) // URL expiry time (you can adjust this as needed)
                             );
-                    
-                            // Log the URL for debugging
+
+                            // Log the generated signed URL for debugging purposes
                             \Log::info('Signed URL for video: ' . $s3Url);
-                    
+
                             // Return the signed URL to the video
                             return redirect()->to($s3Url);
                         } else {
-                            return response()->file(public_path($file->file));
+                            // If the user is not logged in, redirect them to the login page
+                            return redirect()->route('login')->with('error', 'You need to be logged in to access this video.');
                         }
-                    }                    
-                                                       
+                    } else {
+                        // If the file is not stored on S3, return it from the public directory
+                        return response()->file(public_path($file->file));
+                    }
                 }
             }
         }
-
-        abort(403);
     }
+
+    // If the user doesn't have access or the file doesn't exist, abort with a 403 Forbidden response
+    abort(403);
+}
+
 
     public function getLesson(Request $request, $slug, $lesson_id)
     {
