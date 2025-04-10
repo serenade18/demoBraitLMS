@@ -120,14 +120,28 @@ class LoginController extends Controller
         ]);
     }
 
+    // public function logout(Request $request)
+    // {
+    //     $user = auth()->user();
+
+    //     $userLoginHistoryMixin = new UserLoginHistoryMixin();
+    //     $userLoginHistoryMixin->storeUserLogoutHistory($user->id);
+
+    //     Auth::logout();
+    //     return redirect(getAdminPanelUrl() . '/login');
+    // }
     public function logout(Request $request)
     {
         $user = auth()->user();
 
-        $userLoginHistoryMixin = new UserLoginHistoryMixin();
-        $userLoginHistoryMixin->storeUserLogoutHistory($user->id);
+        if ($user) {
+            $userLoginHistoryMixin = new UserLoginHistoryMixin();
+            $userLoginHistoryMixin->storeUserLogoutHistory($user->id);
+        }
 
         Auth::logout();
+
         return redirect(getAdminPanelUrl() . '/login');
     }
+
 }
