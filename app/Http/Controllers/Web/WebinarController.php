@@ -604,30 +604,20 @@ class WebinarController extends Controller
                     }
                     else if ($file->isVideo()) {
                         if ($file->storage == 'upload') {
-                            // Extract file path stored in DB (can be a key or a full URL)
-                            $s3Key = $file->file;
+                            // Get the file path from the database or object
+                            $filePath = $file->file; 
                     
-                            // If it's a full URL, strip the domain part
-                            if (filter_var($s3Key, FILTER_VALIDATE_URL)) {
-                                $parsedPath = parse_url($s3Key, PHP_URL_PATH);
-                                $s3Key = ltrim($parsedPath, '/');
-                            }
+                            $s3Url = $filePath;
                     
-                            // URL-encode the path except slashes
-                            $encodedKey = implode('/', array_map('rawurlencode', explode('/', $s3Key)));
+                            // Log the URL for debugging
+                            \Log::info('Direct URL for video: ' . $s3Url);
                     
-                            // Construct full URL using custom S3 domain
-                            $customS3Url = 'http://easyprenuer.com.s3.amazonaws.com/' . $encodedKey;
-                    
-                            // Log for debugging
-                            \Log::info('Custom S3 URL: ' . $customS3Url);
-                    
-                            // Redirect to custom URL
-                            return redirect()->to($customS3Url);
+                            // Return the URL to the video (no signed URL needed)
+                            return redirect()->to($s3Url);
                         } else {
                             return response()->file(public_path($file->file));
                         }
-                    }                          
+                    }
                                                        
                 }
             }
