@@ -607,17 +607,21 @@ class WebinarController extends Controller
                             // Get the file path from the database or object
                             $filePath = $file->file; 
                     
-                            $s3Url = $filePath;
+                            // Generate a signed URL for the file on S3 that expires in 10 minutes (you can adjust the expiry time)
+                            $s3Url = \Storage::disk('s3')->temporaryUrl(
+                                $filePath,   // Path to the file in the S3 bucket
+                                now()->addMinutes(10) // URL expiry time (you can adjust this as needed)
+                            );
                     
                             // Log the URL for debugging
-                            \Log::info('Direct URL for video: ' . $s3Url);
+                            \Log::info('Signed URL for video: ' . $s3Url);
                     
-                            // Return the URL to the video (no signed URL needed)
+                            // Return the signed URL to the video
                             return redirect()->to($s3Url);
                         } else {
                             return response()->file(public_path($file->file));
                         }
-                    }
+                    }                    
                                                        
                 }
             }
