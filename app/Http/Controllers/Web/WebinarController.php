@@ -682,24 +682,20 @@ class WebinarController extends Controller
                     else if ($file->isVideo()) {
                         if ($file->storage == 'upload') {
                             // Get the file path from the database or object
-                            $filePath = $file->file; 
-                    
-                            // Generate a signed URL for the file on S3 that expires in 10 minutes (you can adjust the expiry time)
-                            $s3Url = \Storage::disk('s3')->temporaryUrl(
-                                $filePath,   // Path to the file in the S3 bucket
-                                // now()->addMinutes(10) // URL expiry time (you can adjust this as needed)
-                            );
-                    
-                            // Log the URL for debugging
-                            \Log::info('Signed URL for video: ' . $s3Url);
-                    
-                            // Return the signed URL to the video
-                            return redirect()->to($s3Url);
+                            $filePath = $file->file;
+                            
+                            // Construct the CloudFront URL by combining the CloudFront domain and the file path
+                            $cloudFrontUrl = 'https://d2r2yav72qouf8.cloudfront.net' . $filePath;
+    
+                            // Log the CloudFront URL for debugging
+                            \Log::info('CloudFront URL for video: ' . $cloudFrontUrl);
+    
+                            // Return the CloudFront URL to the video
+                            return redirect()->to($cloudFrontUrl);
                         } else {
                             return response()->file(public_path($file->file));
-                        }
-                    }                    
-                                                       
+                        }                   
+                    }                               
                 }
             }
         }
