@@ -79,17 +79,40 @@ class CartItemInfo
         return $info;
     }
 
+    // private function getReserveMeetingInfo($cart, $creator)
+    // {
+    //     $info = [];
+
+    //     $info['imgPath'] = $creator->getAvatar(150);
+    //     $info['itemUrl'] = null;
+    //     $info['title'] = trans('meeting.reservation_appointment') . ' ' . ((!empty($cart->reserveMeeting->student_count) and $cart->reserveMeeting->student_count > 1) ? '(' . trans('update.reservation_appointment_student_count', ['count' => $cart->reserveMeeting->student_count]) . ')' : '');
+    //     $info['profileUrl'] = $creator->getProfileUrl();
+    //     $info['teacherName'] = $creator->full_name;
+    //     $info['rate'] = $creator->rates();
+    //     $info['price'] = $cart->reserveMeeting->paid_amount;
+
+    //     return $info;
+    // }
+
     private function getReserveMeetingInfo($cart, $creator)
     {
         $info = [];
 
-        $info['imgPath'] = $creator->getAvatar(150);
-        $info['itemUrl'] = null;
-        $info['title'] = trans('meeting.reservation_appointment') . ' ' . ((!empty($cart->reserveMeeting->student_count) and $cart->reserveMeeting->student_count > 1) ? '(' . trans('update.reservation_appointment_student_count', ['count' => $cart->reserveMeeting->student_count]) . ')' : '');
-        $info['profileUrl'] = $creator->getProfileUrl();
-        $info['teacherName'] = $creator->full_name;
-        $info['rate'] = $creator->rates();
-        $info['price'] = $cart->reserveMeeting->paid_amount;
+        if (!empty($creator)) {
+            $info['imgPath'] = $creator->getAvatar(150);
+            $info['itemUrl'] = null;
+            $info['title'] = trans('meeting.reservation_appointment') . ((!empty($cart->reserveMeeting->student_count) && $cart->reserveMeeting->student_count > 1) ? ' (' . trans('update.reservation_appointment_student_count', ['count' => $cart->reserveMeeting->student_count]) . ')' : '');
+            $info['profileUrl'] = $creator->getProfileUrl();
+            $info['teacherName'] = $creator->full_name;
+            $info['rate'] = $creator->rates();
+        } else {
+            $info['imgPath'] = asset('') . 'assets/default/img/avatar.png'; // Fallback avatar
+            $info['itemUrl'] = null;
+            $info['title'] = trans('meeting.reservation_appointment');
+            $info['profileUrl'] = '#';
+            $info['teacherName'] = __('Unknown Instructor');
+            $info['rate'] = 0;
+        }
 
         return $info;
     }
