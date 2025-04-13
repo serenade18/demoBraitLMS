@@ -130,11 +130,12 @@
                                                 <select name="teacher_id" data-search-option="except_user" class="form-control search-user-select22"
                                                         data-placeholder="{{ trans('public.select_a_teacher') }}"
                                                 >
-                                                    @if(!empty($webinar))
-                                                        <option value="{{ $webinar->teacher->id }}" selected>{{ $webinar->teacher->full_name }}</option>
-                                                    @else
-                                                        <option selected disabled>{{ trans('public.select_a_teacher') }}</option>
-                                                    @endif
+                                                @if(!empty($webinar) && !empty($webinar->teacher))
+                                                    <option value="{{ $webinar->teacher->id }}" selected>{{ $webinar->teacher->full_name }}</option>
+                                                @else
+                                                    <option selected disabled>{{ trans('public.select_a_teacher') }}</option>
+                                                @endif
+
                                                 </select>
 
                                                 @error('teacher_id')
