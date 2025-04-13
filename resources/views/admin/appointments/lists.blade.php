@@ -210,7 +210,13 @@
                                     </td>
 
                                     <td class="text-left">
-                                        <a href="{{ $appointment->user->getProfileUrl() }}" target="_blank">{{ $appointment->user->full_name }}</a>
+                                    @if(!empty($appointment->user))
+                                        <a href="{{ $appointment->user->getProfileUrl() }}" target="_blank">
+                                            {{ $appointment->user->full_name }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">{{ __('Unknown User') }}</span>
+                                    @endif
                                     </td>
 
                                     <td class="text-center">
