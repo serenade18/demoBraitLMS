@@ -346,12 +346,21 @@
                             <ul class="list-unstyled list-unstyled-border">
                                 @foreach($recentComments as $recentComment)
                                     <li class="media">
-                                        <img class="mr-3 rounded-circle" width="50" height="50" src="{{ $recentComment->user->getAvatar() }}" alt="avatar">
-                                        <div class="media-body">
-                                            <div class="float-right text-primary font-12">{{ dateTimeFormat($recentComment->created_at, 'j M Y | H:i') }}</div>
-                                            <div class="media-title">{{ $recentComment->user->full_name }}</div>
-                                            <span class="text-small text-muted">{{ truncate($recentComment->comment, 150) }}</span>
-                                        </div>
+                                        @if(!empty($recentComment->user))
+                                            <img class="mr-3 rounded-circle" width="50" height="50" src="{{ $recentComment->user->getAvatar() }}" alt="avatar">
+                                            <div class="media-body">
+                                                <div class="float-right text-primary font-12">{{ dateTimeFormat($recentComment->created_at, 'j M Y | H:i') }}</div>
+                                                <div class="media-title">{{ $recentComment->user->full_name }}</div>
+                                                <span class="text-small text-muted">{{ truncate($recentComment->comment, 150) }}</span>
+                                            </div>
+                                        @else
+                                            <img class="mr-3 rounded-circle" width="50" height="50" src="{{ asset('assets/default/img/avatar.png') }}" alt="avatar">
+                                            <div class="media-body">
+                                                <div class="float-right text-primary font-12">{{ dateTimeFormat($recentComment->created_at, 'j M Y | H:i') }}</div>
+                                                <div class="media-title">{{ __('Unknown User') }}</div>
+                                                <span class="text-small text-muted">{{ truncate($recentComment->comment, 150) }}</span>
+                                            </div>
+                                        @endif
                                     </li>
                                 @endforeach
                             </ul>
