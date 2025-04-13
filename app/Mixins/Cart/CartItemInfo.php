@@ -36,8 +36,13 @@ class CartItemInfo
         $info['imgPath'] = $webinar->getImage();
         $info['itemUrl'] = $webinar->getUrl();
         $info['title'] = $webinar->title;
-        $info['profileUrl'] = $webinar->teacher->getProfileUrl();
-        $info['teacherName'] = $webinar->teacher->full_name;
+        if (!empty($webinar->teacher)) {
+            $info['profileUrl'] = $webinar->teacher->getProfileUrl();
+            $info['teacherName'] = $webinar->teacher->full_name;
+        } else {
+            $info['profileUrl'] = null;
+            $info['teacherName'] = null;
+        };
         $info['rate'] = $webinar->getRate();
         $info['price'] = $webinar->price;
         $info['discountPrice'] = $webinar->getDiscount($cart->ticket) ? ($webinar->price - $webinar->getDiscount($cart->ticket)) : null;
@@ -52,8 +57,16 @@ class CartItemInfo
         $info['imgPath'] = $bundle->getImage();
         $info['itemUrl'] = $bundle->getUrl();
         $info['title'] = $bundle->title;
-        $info['profileUrl'] = $bundle->teacher->getProfileUrl();
-        $info['teacherName'] = $bundle->teacher->full_name;
+        if (!empty($bundle->teacher)) {
+            $info['profileUrl'] = $bundle->teacher->getProfileUrl();
+            $info['teacherName'] = $bundle->teacher->full_name;
+        } else {
+            $info['profileUrl'] = null;
+            $info['teacherName'] = null;
+        }
+        
+        // $info['profileUrl'] = $bundle->teacher->getProfileUrl();
+        // $info['teacherName'] = $bundle->teacher->full_name;
         $info['rate'] = $bundle->getRate();
         $info['price'] = $bundle->price;
         $info['discountPrice'] = $bundle->getDiscount($cart->ticket) ? ($bundle->price - $bundle->getDiscount($cart->ticket)) : null;
