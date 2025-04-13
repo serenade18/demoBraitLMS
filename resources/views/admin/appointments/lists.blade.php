@@ -200,7 +200,13 @@
                             @foreach($appointments as $appointment)
                                 <tr>
                                     <td class="text-left">
-                                        <a href="{{ $appointment->meeting->creator->getProfileUrl() }}" target="_blank">{{ $appointment->meeting->creator->full_name }}</a>
+                                    @if(!empty($appointment->meeting) && !empty($appointment->meeting->creator))
+                                        <a href="{{ $appointment->meeting->creator->getProfileUrl() }}" target="_blank">
+                                            {{ $appointment->meeting->creator->full_name }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">{{ __('Unknown Creator') }}</span>
+                                    @endif
                                     </td>
 
                                     <td class="text-left">
