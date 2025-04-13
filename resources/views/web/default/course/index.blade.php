@@ -750,12 +750,14 @@
                             <span class="ml-10 mt-15 font-14">({{ $course->reviews->pluck('creator_id')->count() }}
                                 {{ trans('public.ratings') }})</span>
                         </div>
-
-                        <div class="mt-15">
-                            <span class="font-14">{{ trans('public.created_by') }}</span>
-                            <a href="{{ $course->teacher->getProfileUrl() }}" target="_blank"
-                                class="text-decoration-underline text-white font-14 font-weight-500">{{ $course->teacher->full_name }}</a>
-                        </div>
+                         
+                        @if(!empty($courseTeacher))
+                            <div class="mt-15">
+                                <span class="font-14">{{ trans('public.created_by') }}</span>
+                                <a href="{{ $course->teacher->getProfileUrl() }}" target="_blank"
+                                    class="text-decoration-underline text-white font-14 font-weight-500">{{ $course->teacher->full_name }}</a>
+                            </div>
+                        @endif
 
                         @if ($hasBought or $percent)
                             <div class="mt-30 d-flex align-items-center">
