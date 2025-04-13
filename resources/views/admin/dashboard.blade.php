@@ -502,7 +502,7 @@
                                             </div>
 
                                             <div class="ticket-info">
-                                            @if(!empty($course->teacher))
+                                                @if(!empty($course->teacher))
                                                     <div>{{ $course->teacher->full_name }}</div>
                                                 @else
                                                     <div>{{ __('Unknown Instructor') }}</div>
