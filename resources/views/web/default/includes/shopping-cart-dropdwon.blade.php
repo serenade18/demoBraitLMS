@@ -48,12 +48,12 @@
                                             <h4>{{ $cartItemInfo['title'] }}</h4>
                                         </a>
                                         <div class="price mt-10">
-                                            @if(!empty($cartItemInfo['discountPrice']))
-                                                <span class="text-primary font-weight-bold">{{ handlePrice($cartItemInfo['discountPrice'], true, true, false, null, true, $cartTaxType) }}</span>
-                                                <span class="off ml-15">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true, $cartTaxType) }}</span>
-                                            @else
-                                                <span class="text-primary font-weight-bold">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true, $cartTaxType) }}</span>
-                                            @endif
+                                        @if(!empty($cartItemInfo['discountPrice']) && isset($cartItemInfo['price']))
+                                            <span class="text-primary font-weight-bold">{{ handlePrice($cartItemInfo['discountPrice'], true, true, false, null, true, $cartTaxType) }}</span>
+                                            <span class="off ml-15">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true, $cartTaxType) }}</span>
+                                        @elseif(isset($cartItemInfo['price']))
+                                            <span class="text-primary font-weight-bold">{{ handlePrice($cartItemInfo['price'], true, true, false, null, true, $cartTaxType) }}</span>
+                                        @endif
 
                                             @if(!empty($cartItemInfo['quantity']))
                                                 <span class="font-12 text-warning font-weight-500 ml-10">({{ $cartItemInfo['quantity'] }} {{ trans('update.product') }})</span>
