@@ -569,7 +569,7 @@
                     </a>
                 @endif
 
-                @if ($course->teacher->offline)
+                @if (!empty($course->teacher) && $course->teacher->offline)
                     <div class="rounded-lg shadow-sm mt-35 d-flex">
                         <div class="offline-icon offline-icon-left d-flex align-items-stretch">
                             <div class="d-flex align-items-center">
