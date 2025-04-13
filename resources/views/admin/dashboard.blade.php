@@ -502,7 +502,11 @@
                                             </div>
 
                                             <div class="ticket-info">
-                                                <div>{{ $course->teacher->full_name }}</div>
+                                            @if(!empty($course->teacher))
+                                                    <div>{{ $course->teacher->full_name }}</div>
+                                                @else
+                                                    <div>{{ __('Unknown Instructor') }}</div>
+                                                @endif
                                                 <div class="bullet"></div>
                                                 @switch($course->status)
                                                     @case(\App\Models\Webinar::$active)
