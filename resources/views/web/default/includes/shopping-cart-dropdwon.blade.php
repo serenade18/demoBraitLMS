@@ -27,6 +27,13 @@
                             @php
                                 $cartItemInfo = $cart->getItemInfo();
                                 $cartTaxType = !empty($cartItemInfo['isProduct']) ? 'store' : 'general';
+                                
+                                $creator = $cart->creator; 
+                                if ($creator) {
+                                    $avatar = $creator->getAvatar(150);
+                                } else {
+                                    $avatar = 'default-avatar.jpg'; 
+                                }
                             @endphp
 
                             @if(!empty($cartItemInfo))
