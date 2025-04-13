@@ -453,7 +453,7 @@
                                                 @enderror
                                             </div>
 
-                                            @if(!empty($webinar) and $webinar->creator->isOrganization())
+                                            @if(!empty($webinar) && !empty($webinar->creator) && $webinar->creator->isOrganization())
                                                 <div class="form-group mt-15">
                                                     <label class="input-label">{{ trans('update.organization_price') }} ({{ $currency }})</label>
                                                     <input type="number" name="organization_price" value="{{ (!empty($webinar) and $webinar->organization_price) ? convertPriceToUserCurrency($webinar->organization_price) : old('organization_price') }}" class="form-control @error('organization_price')  is-invalid @enderror" placeholder=""/>
