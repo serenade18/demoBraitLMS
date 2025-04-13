@@ -20,18 +20,20 @@
         </div>
     @endif
 
-    <h3 class="mt-10 font-16 font-weight-bold text-secondary">{{ $courseTeacher->full_name }}</h3>
-    <span class="mt-5 font-14 font-weight-500 text-gray text-center">{{ $courseTeacher->bio }}</span>
+    @if(!empty($courseTeacher))
+        <h3 class="mt-10 font-16 font-weight-bold text-secondary">{{ $courseTeacher->full_name }}</h3>
+        <span class="mt-5 font-14 font-weight-500 text-gray text-center">{{ $courseTeacher->bio }}</span>
 
-    @include('web.default.includes.webinar.rate',['rate' => $courseTeacher->rates()])
+        @include('web.default.includes.webinar.rate',['rate' => $courseTeacher->rates()])
 
-    <div class="user-reward-badges d-flex flex-wrap align-items-center mt-20">
-        @foreach($courseTeacher->getBadges() as $userBadge)
-            <div class="mr-15 mt-10" data-toggle="tooltip" data-placement="bottom" data-html="true" title="{!! (!empty($userBadge->badge_id) ? nl2br($userBadge->badge->description) : nl2br($userBadge->description)) !!}">
-                <img src="{{ !empty($userBadge->badge_id) ? $userBadge->badge->image : $userBadge->image }}" width="32" height="32" alt="{{ !empty($userBadge->badge_id) ? $userBadge->badge->title : $userBadge->title }}">
-            </div>
-        @endforeach
-    </div>
+        <div class="user-reward-badges d-flex flex-wrap align-items-center mt-20">
+            @foreach($courseTeacher->getBadges() as $userBadge)
+                <div class="mr-15 mt-10" data-toggle="tooltip" data-placement="bottom" data-html="true" title="{!! (!empty($userBadge->badge_id) ? nl2br($userBadge->badge->description) : nl2br($userBadge->description)) !!}">
+                    <img src="{{ !empty($userBadge->badge_id) ? $userBadge->badge->image : $userBadge->image }}" width="32" height="32" alt="{{ !empty($userBadge->badge_id) ? $userBadge->badge->title : $userBadge->title }}">
+                </div>
+            @endforeach
+        </div>
+    @endif
 
     @php
         $hasMeeting = !empty($courseTeacher->hasMeeting());
