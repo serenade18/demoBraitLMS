@@ -138,19 +138,19 @@
                                             <td>{{ $specialOffer->name }}</td>
 
                                             <td class="text-left">
-                                                @if(!empty($specialOffer->webinar_id))
+                                                @if(!empty($specialOffer->webinar_id) && !empty($specialOffer->webinar))
                                                     <span class="d-block font-14">{{ $specialOffer->webinar->title }}</span>
                                                     <span class="d-block font-12 text-muted">{{ trans('admin/main.course') }}</span>
-                                                @elseif($specialOffer->bundle_id)
+                                                @elseif(!empty($specialOffer->bundle_id) && !empty($specialOffer->bundle))
                                                     <span class="d-block font-14">{{ $specialOffer->bundle->title }}</span>
                                                     <span class="d-block font-12 text-muted">{{ trans('update.bundle') }}</span>
-                                                @elseif($specialOffer->subscribe_id)
+                                                @elseif(!empty($specialOffer->subscribe_id) && !empty($specialOffer->subscribe))
                                                     <span class="d-block font-14">{{ $specialOffer->subscribe->title }}</span>
-                                                    <span class="d-block font-12 text-muted">{{ trans('public.subscribe') }}</span>
-                                                @elseif($specialOffer->registration_package_id)
-                                                    <span class="d-block font-14">{{ $specialOffer->registrationPackage->title }}</span>
-                                                    <span class="d-block font-12 text-muted">{{ trans('update.registration_package') }}</span>
+                                                    <span class="d-block font-12 text-muted">{{ trans('update.subscription_plan') }}</span>
+                                                @else
+                                                    <span class="text-warning">{{ __('admin/main.unknown_target') }}</span>
                                                 @endif
+                                            </td>
                                             </td>
 
                                             <td>{{  $specialOffer->percent ?  $specialOffer->percent . '%' : '-' }}</td>
