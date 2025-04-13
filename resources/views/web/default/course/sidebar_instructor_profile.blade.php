@@ -33,17 +33,18 @@
                 </div>
             @endforeach
         </div>
+   
+
+        @php
+            $hasMeeting = !empty($courseTeacher->hasMeeting());
+        @endphp
+
+        <div class="mt-25 d-flex flex-row align-items-center justify-content-center w-100">
+            <a href="{{ $courseTeacher->getProfileUrl() }}" target="_blank" class="btn btn-sm btn-primary {{ $hasMeeting ? 'teacher-btn-action' : 'btn-block' }}">{{ trans('public.profile') }}</a>
+
+            @if($hasMeeting)
+                <a href="{{ $courseTeacher->getProfileUrl() }}" class="btn btn-sm btn-primary teacher-btn-action ml-15">{{ trans('public.book_a_meeting') }}</a>
+            @endif
+        </div>
     @endif
-
-    @php
-        $hasMeeting = !empty($courseTeacher->hasMeeting());
-    @endphp
-
-    <div class="mt-25 d-flex flex-row align-items-center justify-content-center w-100">
-        <a href="{{ $courseTeacher->getProfileUrl() }}" target="_blank" class="btn btn-sm btn-primary {{ $hasMeeting ? 'teacher-btn-action' : 'btn-block' }}">{{ trans('public.profile') }}</a>
-
-        @if($hasMeeting)
-            <a href="{{ $courseTeacher->getProfileUrl() }}" class="btn btn-sm btn-primary teacher-btn-action ml-15">{{ trans('public.book_a_meeting') }}</a>
-        @endif
-    </div>
 </div>
