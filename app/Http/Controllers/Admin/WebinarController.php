@@ -605,11 +605,35 @@ class WebinarController extends Controller
             ]);
         }
 
+        // if (!empty($data['teacher_id'])) {
+        //     $teacher = User::find($data['teacher_id']);
+        //     $creator = !empty($data['organ_id']) ? User::find($data['organ_id']) : $webinar->creator;
+
+        //     if (empty($teacher) or ($creator->isOrganization() and ($teacher->organ_id != $creator->id and $teacher->id != $creator->id))) {
+        //         $toastData = [
+        //             'title' => trans('public.request_failed'),
+        //             'msg' => trans('admin/main.is_not_the_teacher_of_this_organization'),
+        //             'status' => 'error'
+        //         ];
+        //         return back()->with(['toast' => $toastData]);
+        //     }
+        // }
+
         if (!empty($data['teacher_id'])) {
             $teacher = User::find($data['teacher_id']);
-            $creator = !empty($data['organ_id']) ? User::find($data['organ_id']) : $webinar->creator;
-
-            if (empty($teacher) or ($creator->isOrganization() and ($teacher->organ_id != $creator->id and $teacher->id != $creator->id))) {
+        
+            // Safely get the creator
+            $creator = !empty($data['organ_id']) 
+                ? User::find($data['organ_id']) 
+                : (!empty($webinar) && !empty($webinar->creator) ? $webinar->creator : null);
+        
+            if (
+                empty($teacher) || 
+                (
+                    $creator && $creator->isOrganization() && 
+                    ($teacher->organ_id != $creator->id && $teacher->id != $creator->id)
+                )
+            ) {
                 $toastData = [
                     'title' => trans('public.request_failed'),
                     'msg' => trans('admin/main.is_not_the_teacher_of_this_organization'),
@@ -617,7 +641,7 @@ class WebinarController extends Controller
                 ];
                 return back()->with(['toast' => $toastData]);
             }
-        }
+        }        
 
 
         if (empty($data['slug'])) {
