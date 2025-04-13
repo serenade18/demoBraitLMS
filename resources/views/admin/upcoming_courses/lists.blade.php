@@ -228,7 +228,7 @@
                                                 @endif
                                             </td>
 
-                                            <td class="text-left">{{ $upcomingCourse->teacher->full_name }}</td>
+                                            <td class="text-left">{{ $upcomingCourse->teacher ? $upcomingCourse->teacher->full_name : __('Unknown Instructor') }}</td>
 
                                             <td class="">{{ trans('admin/main.'.$upcomingCourse->type) }}</td>
 
