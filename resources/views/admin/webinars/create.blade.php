@@ -113,7 +113,7 @@
                                                 @enderror
                                             </div>
 
-                                            @if(!empty($webinar) and $webinar->creator->isOrganization())
+                                            @if(!empty($webinar) && !empty($webinar->creator) && $webinar->creator->isOrganization())
                                                 <div class="form-group mt-15 ">
                                                     <label class="input-label d-block">{{ trans('admin/main.organization') }}</label>
 
